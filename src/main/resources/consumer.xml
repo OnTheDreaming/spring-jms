@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jms="http://www.springframework.org/schema/jms"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
        <import resource="commApp.xml"/>
        <bean id="receiveDataService" class="com.jms.services.servicesImpl.ReceiveDataServiceImpl">
@@ -9,22 +9,57 @@
        </bean>
 
 
-       <!-- 消息监听实现方法 一 -->
+
+       <!--3种不同的 消息监听器 装载到 DefaultMessageListenerContainer 监听容器中-->
+
+       <!--MessageListener-->
        <bean id="jmsContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
               <property name="connectionFactory" ref="connectionFactory"/>
-              <property name="destination" ref="topicDestination" />
-              <property name="messageListener" ref="pureMDPAdapter"/>
-             <!-- <property name="messageListener" ref="consumerListener"/>-->
+              <property name="destination" ref="queueDestination" />
+              <!-- 1. JMS API MessageListener-->
+              <property name="messageListener" ref="consumerListener"/>
        </bean>
 
-       <!--实现MessageListener 方法的消息监听器 -->
-       <!--<bean id="consumerListener" class="com.jms.spring_jms.ConsumerListeer"/>-->
+       <!-- SessionAwareMessageListener -->
+       <bean id="sessionAwareListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+              <property name="connectionFactory" ref="connectionFactory"/>
+              <property name="destination" ref="sessionAwareDestination"/>
+              <!--2.Spring-Jms 扩展 SessionAwareMessageListener -->
+              <property name="messageListener" ref="sessionAwareListener"/>
+       </bean>
+       <!--  MessageListenerAdapter-->
+       <bean id="messageListenerAdaptContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+              <property name="connectionFactory" ref="connectionFactory"/>
+              <property name="destination" ref="messageListenerAdaptDestination"/>
+              <!-- 3.Spring-Jms 扩展 MessageListenerAdapter -->
+              <property name="messageListener" ref="pureMDPAdapter"/>
+       </bean>
+
+
+
+
+       <bean id="pureMDPAdapter" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+              <property name="delegate" >
+                     <bean class="com.jms.spring_jms.listener.ConsumerMessageListenerAdapt"/>
+              </property>
+              <!--如果该属性未指定,则默认调用 ConsumerMessageListenerAdapt 中的handleMessage方法-->
+              <!--<property name="defaultListenerMethod" value="receiveMessage"/>-->
+
+              <!--当返回类型是非null时MessageListenerAdapter会自动把返回值封装成一个Message，然后进行回复-->
+              <property name="defaultListenerMethod" value="receiveMessageAndRespone"/>
+
+              <property name="defaultResponseDestination" ref="queueDestination"/>
+       </bean>
+       <bean id="consumerListener" class="com.jms.spring_jms.listener.ConsumerListeer"/>
+
+       <bean id="sessionAwareListener" class="com.jms.spring_jms.listener.ConsumerSessionAwareMessageListener"/>
+
 
        <!-- 消息监听器 MDB(message driver bean 消息驱动bean)-->
-       <bean id="pureMDPAdapter" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+       <!--<bean id="pureMDPAdapter" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
               <property name="delegate" ref="receiveDataService"/>
               <property name="defaultListenerMethod"  value="receiveData"/>
-       </bean>
+       </bean>-->
 
 
 

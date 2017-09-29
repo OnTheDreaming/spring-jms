@@ -20,6 +20,12 @@
        <bean id="queueDestination" class="org.apache.activemq.command.ActiveMQQueue">
               <constructor-arg value="QUEUE.TEST"/>
        </bean>
+       <bean id="sessionAwareDestination" class="org.apache.activemq.command.ActiveMQQueue">
+              <constructor-arg value="QUEUE.SessionAware"/>
+       </bean>
+       <bean id="messageListenerAdaptDestination" class="org.apache.activemq.command.ActiveMQQueue">
+              <constructor-arg value="QUEUE.messageListenerAdapt"/>
+       </bean>
        <bean id="topicDestination" class="org.apache.activemq.command.ActiveMQTopic">
               <constructor-arg value="TOPIC.TEST"/>
        </bean>

@@ -1,6 +1,8 @@
 package com.jms.services;
 
 
+import javax.jms.Destination;
+
 public interface SendDataServices {
-    public void  sendMessge( final String Message);
+   void  sendMessge( Destination destination,String Message);
 }
