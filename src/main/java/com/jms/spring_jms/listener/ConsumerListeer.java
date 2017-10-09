@@ -2,6 +2,10 @@ package com.jms.spring_jms.listener;
 
 
 
+import com.jms.entity.OrderInfo;
+import com.jms.messageConvert.OrderMessageConvert;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -12,12 +16,14 @@ import javax.jms.TextMessage;
  * 其中定义了一个用于处理接收到的消息的onMessage方法，该方法只接收一个Message参数
  */
 public class ConsumerListeer implements MessageListener {
+    @Autowired
+    private OrderMessageConvert orderMessageConvert;
     @Override
     public void onMessage(Message message) {
-        TextMessage textMessage=(TextMessage)message;
         try {
-            System.out.println("ConsumerListeer接收消息到的消息为:"+textMessage.getText());
-        }catch ( JMSException e){
+           OrderInfo orderInfo=(OrderInfo) orderMessageConvert.fromMessage(message);
+            System.out.println(orderInfo.getName());
+        } catch (JMSException e) {
             e.printStackTrace();
         }
     }

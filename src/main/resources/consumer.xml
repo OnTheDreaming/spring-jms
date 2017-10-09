@@ -9,28 +9,28 @@
        </bean>
 
 
-
        <!--3种不同的 消息监听器 装载到 DefaultMessageListenerContainer 监听容器中-->
 
        <!--MessageListener-->
-       <bean id="jmsContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+       <!--<bean id="jmsContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
               <property name="connectionFactory" ref="connectionFactory"/>
               <property name="destination" ref="queueDestination" />
-              <!-- 1. JMS API MessageListener-->
+              &lt;!&ndash; 1. JMS API MessageListener&ndash;&gt;
               <property name="messageListener" ref="consumerListener"/>
        </bean>
 
-       <!-- SessionAwareMessageListener -->
+
+       &lt;!&ndash; SessionAwareMessageListener &ndash;&gt;
        <bean id="sessionAwareListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
               <property name="connectionFactory" ref="connectionFactory"/>
               <property name="destination" ref="sessionAwareDestination"/>
-              <!--2.Spring-Jms 扩展 SessionAwareMessageListener -->
+              &lt;!&ndash;2.Spring-Jms 扩展 SessionAwareMessageListener &ndash;&gt;
               <property name="messageListener" ref="sessionAwareListener"/>
-       </bean>
+       </bean>-->
        <!--  MessageListenerAdapter-->
        <bean id="messageListenerAdaptContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
               <property name="connectionFactory" ref="connectionFactory"/>
-              <property name="destination" ref="messageListenerAdaptDestination"/>
+              <property name="destination" ref="queueDestination"/>
               <!-- 3.Spring-Jms 扩展 MessageListenerAdapter -->
               <property name="messageListener" ref="pureMDPAdapter"/>
        </bean>
@@ -46,14 +46,15 @@
               <!--<property name="defaultListenerMethod" value="receiveMessage"/>-->
 
               <!--当返回类型是非null时MessageListenerAdapter会自动把返回值封装成一个Message，然后进行回复-->
-              <property name="defaultListenerMethod" value="receiveMessageAndRespone"/>
+              <property name="defaultListenerMethod" value="receiveMessage"/>
 
               <property name="defaultResponseDestination" ref="queueDestination"/>
+              <property name="messageConverter" ref="orderMessageConvert"/>
        </bean>
        <bean id="consumerListener" class="com.jms.spring_jms.listener.ConsumerListeer"/>
 
        <bean id="sessionAwareListener" class="com.jms.spring_jms.listener.ConsumerSessionAwareMessageListener"/>
-
+       <bean id="orderMessageConvert" class="com.jms.messageConvert.OrderMessageConvert"/>
 
        <!-- 消息监听器 MDB(message driver bean 消息驱动bean)-->
        <!--<bean id="pureMDPAdapter" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">

@@ -1,5 +1,6 @@
 package com.jms.spring_jms.producer;
 
+import com.jms.entity.OrderInfo;
 import com.jms.services.SendDataServices;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 
@@ -20,7 +21,8 @@ public class QueueProducer {
         /**
          * 测试MessageListenerAdapt
          */
-        Destination destination=(Destination)applicationContext.getBean("messageListenerAdaptDestination");
+
+        Destination destination=(Destination)applicationContext.getBean("queueDestination");
 
 //        for (int i = 0; i <10 ; i++) {
 //            sendMessageImpl.sendMessge(destination,"发送消息:" + i);
@@ -31,7 +33,11 @@ public class QueueProducer {
 
 
 
-        System.out.println("发送 测试MessageListenerAdapt");
-        sendMessageImpl.sendMessge(destination, "测试MessageListenerAdapt");
+//        System.out.println("发送 测试MessageListenerAdapt");
+//        sendMessageImpl.sendMessge(destination, "测试MessageListenerAdapt");
+
+        OrderInfo orderInfo=new OrderInfo();
+        orderInfo.setName("Computer");
+        sendMessageImpl.sendMessge(destination,orderInfo);
     }
 }

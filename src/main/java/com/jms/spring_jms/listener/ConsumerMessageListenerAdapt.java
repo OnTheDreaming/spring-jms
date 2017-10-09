@@ -1,5 +1,7 @@
 package com.jms.spring_jms.listener;
 
+import com.jms.entity.OrderInfo;
+
 /**
  * MessageListenerAdapter类实现了MessageListener接口和SessionAwareMessageListener接口，它的主要作用是将接收到的消息进行类型转换，然后通过反射的形式把它交给一个普通的Java类进行处理。
 
@@ -39,5 +41,14 @@ public class ConsumerMessageListenerAdapt {
     public String receiveMessageAndRespone(String message) {
         System.out.println("ConsumerMessageListenerAdapt通过receiveMessageAndRespone接收到一个纯文本消息，消息内容是：" + message);
         return "这是ConsumerMessageListenerAdapt对象的receiveMessageAndRespone方法的返回值。";
+    }
+
+    /**
+     * 类型转换后如果是OrderInfo 类调用此方法
+     * @param orderInfo
+     */
+    public  void receiveMessage(OrderInfo orderInfo){
+        System.out.println(orderInfo.getName());
+
     }
 }
